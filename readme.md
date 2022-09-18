@@ -3,7 +3,7 @@ O arquivo Readme.md é utilizado para apresentar as soluções do projeto mantid
 
 ## Modelo de dados da aplicação
 
-![Texto alternativo para a imagem](https://github.com/arleysouza/typeorm-jwt-bcrypt/blob/main/modelo.png)
+![Texto alternativo para a imagem](https://github.com/arleysouza/typeorm-jwt-bcrypt/blob/master/imagens/modelo.png)
 
 É necessário setar os parâmetros de acesso ao SGBD PostgreSQL no arquivo `src/add-data-source.ts`.
 
