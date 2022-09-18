@@ -1,5 +1,5 @@
 # Servidor construído usando Express, TypeORM, JSON Web Token, Bcrypt e PostgreSQL
-O arquivo Readme.md é utilizado para apresentar as soluções do projeto mantido no repositório no formato de uma página de internet. O README é um arquivo com a extensão MD (MarkDown).
+Projeto usado para testar o acesso ao SGBD usando TypeORM e o controle de acesso usando dois níveis de permissão (usuário e administrador).
 
 ## Modelo de dados da aplicação
 
