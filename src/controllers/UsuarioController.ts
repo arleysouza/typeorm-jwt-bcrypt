@@ -56,6 +56,7 @@ class UsuarioController {
     return res.json(usuario)
   }
 
+  // usado pelo administrador para alterar qualquer dado
   public async update(req: Request, res: Response): Promise<Response> {
     const { idusuario, re, nome, perfil, senha } = req.body
     const usuario: any = await AppDataSource.manager.findOneBy(Usuario, { idusuario }).catch((e) => {
@@ -69,11 +70,34 @@ class UsuarioController {
         usuario.senha = senha
       }
       const r = await AppDataSource.manager.save(Usuario, usuario).catch((e) => {
-        // testa se o e-mail é repetido
+        // testa se o RE é repetido
         if (/(re)[\s\S]+(already exists)/.test(e.detail)) {
           return ({ error: 'RE já existe' })
         }
         return e
+      })
+      return res.json(r)
+    }
+    else if (usuario && usuario.error) {
+      return res.json(usuario)
+    }
+    else {
+      return res.json({ error: "Usuário não localizado" })
+    }
+  }
+
+  // usado pelo usuário para alterar somente a própria senha
+  public async updateSenha(req: Request, res: Response): Promise<Response> {
+    const { senha } = req.body
+    const {idusuario} = res.locals
+    const usuario: any = await AppDataSource.manager.findOneBy(Usuario, { idusuario }).catch((e) => {
+      return { error: "Identificador inválido" }
+    })
+    if (usuario && usuario.idusuario) {
+      usuario.senha = senha
+      
+      const r = await AppDataSource.manager.save(Usuario, usuario).catch((e) => {
+        return ({ error: e.message })
       })
       return res.json(r)
     }

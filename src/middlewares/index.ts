@@ -18,6 +18,10 @@ export const authorization = async (req: Request, res: Response, next: NextFunct
         if( !decoded || !decoded.idusuario ){
             res.status(401).send({error:"Não autorizado"});
         }
+        else{
+            // passa os dados pelo res.locals para o próximo nível da middleware
+            res.locals = {idusuario: decoded.idusuario, perfil: decoded.perfil}
+        }
     } catch (error) {
         // o toke não é válido, a resposta com HTTP Method 401 (unauthorized)
         res.status(401).send({error:"Não autorizado"});
@@ -28,20 +32,11 @@ export const authorization = async (req: Request, res: Response, next: NextFunct
 
 // requer a autorização de admin para acessar o recurso
 export const authAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    // o token precisa ser enviado pelo cliente no header da requisição
-    const authorization = req.headers.authorization
-    try {
-        // autorização no formato Bearer token
-        const [,token] = authorization.split(" ")
-        // valida o token
-        const decoded = <any>jwt.verify(token, process.env.JWT_SECRET);
-        if( !decoded || decoded.perfil !== 'admin' ){
-            res.status(401).send({error:"Sem autorização para acessar o recurso"});
-            return;
-        }
-    } catch (error) {
-        // o toke não é válido, a resposta com HTTP Method 401 (unauthorized)
-        res.status(401).send({error:"Não autorizado"});
+    // obtém os dados do nível anterior da middleware,
+    // isso evita ter de ler novamente req.headers.authorization
+    const {perfil} = res.locals
+    if( perfil !== 'admin' ){
+        res.status(401).send({error:"Sem autorização para acessar o recurso"});
         return;
     }
     return next();
